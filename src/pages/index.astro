@@ -1,42 +1,35 @@
 ---
 // src/pages/index.astro
-<<<<<<< HEAD
-import Layout from '../layouts/Layout.astro';
----
-
-<Layout title="Labubu 壁纸站 - 首页">
-    <div class="container mx-auto p-4 md:p-8">
-        <h1 class="text-4xl font-bold text-center mb-8">
-            Labubu 壁纸画廊
-        </h1>
-
-        <div class="max-w-md mx-auto rounded-lg overflow-hidden shadow-lg shadow-cyan-500/50">
-            <img 
-                src="/images/labubu-01.webp" 
-                alt="一个梦幻风格的 Labubu 壁纸" 
-                class="w-full h-full object-cover"
-            />
-        </div>
-
-         <p class="text-center mt-8 text-gray-400">
-            更多壁纸正在路上...
-        </p>
-    </div>
-=======
 import { getCollection } from 'astro:content';
-import Layout from '../layouts/Layout.astro';
-import WallpaperCard from '../components/WallpaperCard.astro';
 
 const wallpapers = await getCollection('wallpapers');
 ---
-<Layout title="Labubu Wallpaper Wonderland">
-  <main class="container mx-auto p-4">
-    <h1 class="text-center text-5xl font-bold my-8">Wallpaper Gallery</h1>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {wallpapers.map(wallpaper => (
-        <WallpaperCard {wallpaper} />
-      ))}
-    </div>
-  </main>
->>>>>>> 96d7c3ebcdae202ba01a55fbb22e4123072531b6
-</Layout>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Monstscape 壁纸</title>
+    <style>
+      /* 你可以在这里添加一些基础样式，或者在 global.css 中添加 */
+      body {
+        font-family: sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <main class="container mx-auto p-8">
+      <h1 class="text-4xl font-bold mb-8 text-center">壁纸画廊</h1>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {wallpapers.map(wallpaper => (
+          <a href={`/wallpapers/${wallpaper.slug}`} class="block border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg hover:border-blue-500 transition-all">
+            <img src={wallpaper.data.thumbImg} alt={wallpaper.data.title} class="w-full h-48 object-cover"/>
+            <div class="p-4">
+              <h2 class="text-xl font-semibold">{wallpaper.data.title}</h2>
+              <p class="text-gray-400">{wallpaper.data.series}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </main>
+  </body>
+</html>
