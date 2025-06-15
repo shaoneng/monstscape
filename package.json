@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
   "name": "monstscape",
-=======
-  "name": "download-wallpaper",
->>>>>>> 96d7c3ebcdae202ba01a55fbb22e4123072531b6
   "type": "module",
   "version": "0.0.1",
   "scripts": {
