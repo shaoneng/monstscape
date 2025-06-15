@@ -1,0 +1,41 @@
+---
+// src/pages/wallpapers/[...slug].astro
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { Image } from '@astrojs/image/components';
+
+export async function getStaticPaths() {
+  const wallpapers = await getCollection('wallpapers');
+  return wallpapers.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+<Layout title={entry.data.title}>
+  <main class="container mx-auto p-8 max-w-4xl">
+    <h1 class="text-4xl font-bold">{entry.data.title}</h1>
+    <p class="text-xl text-gray-500 mb-4">{entry.data.series}</p>
+
+    <Image
+      src={entry.data.fullImg}
+      alt={entry.data.title}
+      width={1200}
+      aspectRatio="16:9"
+      class="rounded-lg shadow-lg"
+    />
+
+    <div class="mt-8 text-center">
+      <a href={entry.data.fullImg} download class="inline-block bg-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg hover:bg-blue-700 transition-colors">
+        下载壁纸
+      </a>
+    </div>
+
+    <article class="prose mt-8">
+      <Content />
+    </article>
+  </main>
+</Layout>

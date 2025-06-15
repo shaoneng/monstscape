@@ -1,5 +1,6 @@
 ---
 // src/pages/index.astro
+<<<<<<< HEAD
 import Layout from '../layouts/Layout.astro';
 ---
 
@@ -21,4 +22,21 @@ import Layout from '../layouts/Layout.astro';
             更多壁纸正在路上...
         </p>
     </div>
+=======
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import WallpaperCard from '../components/WallpaperCard.astro';
+
+const wallpapers = await getCollection('wallpapers');
+---
+<Layout title="Labubu Wallpaper Wonderland">
+  <main class="container mx-auto p-4">
+    <h1 class="text-center text-5xl font-bold my-8">Wallpaper Gallery</h1>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {wallpapers.map(wallpaper => (
+        <WallpaperCard {wallpaper} />
+      ))}
+    </div>
+  </main>
+>>>>>>> 96d7c3ebcdae202ba01a55fbb22e4123072531b6
 </Layout>

@@ -1,0 +1,25 @@
+---
+// src/components/WallpaperCard.astro
+import { Image } from '@astrojs/image/components';
+
+
+export interface Props {
+  wallpaper: any; // 'any' for simplicity, you can define a stricter type later
+}
+
+const { wallpaper } = Astro.props;
+const wallpaperUrl = `/wallpapers/${wallpaper.slug}/`;
+---
+<a href={wallpaperUrl} class="group block border rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+  <Image
+    src={wallpaper.data.thumbImg}
+    alt={wallpaper.data.title}
+    width={400}
+    aspectRatio="3:4"
+    format="webp"
+    class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+  />
+  <div class="p-4 bg-white">
+    <h3 class="font-semibold text-gray-800 truncate">{wallpaper.data.title}</h3>
+  </div>
+</a>

@@ -1,13 +1,19 @@
 ---
 // src/layouts/Layout.astro
+<<<<<<< HEAD
 interface Props {
     title: string;
+=======
+export interface Props {
+  title: string;
+>>>>>>> 96d7c3ebcdae202ba01a55fbb22e4123072531b6
 }
 
 const { title } = Astro.props;
 ---
 <!doctype html>
 <html lang="zh-CN">
+<<<<<<< HEAD
     <head>
         <meta charset="UTF-8" />
         <meta name="description" content="高质量 Labubu 粉丝艺术壁纸下载站" />
@@ -21,4 +27,17 @@ const { title } = Astro.props;
             <slot />
         </main>
     </body>
+=======
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="一个高质量的Labubu壁纸下载站" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <slot />
+  </body>
+>>>>>>> 96d7c3ebcdae202ba01a55fbb22e4123072531b6
 </html>
