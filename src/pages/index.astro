@@ -1,35 +1,14 @@
 ---
 // src/pages/index.astro
-import { getCollection } from 'astro:content';
-
-const wallpapers = await getCollection('wallpapers');
+import Layout from '../layouts/Layout.astro';
 ---
-<html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Monstscape 壁纸</title>
-    <style>
-      /* 你可以在这里添加一些基础样式，或者在 global.css 中添加 */
-      body {
-        font-family: sans-serif;
-      }
-    </style>
-  </head>
-  <body class="bg-gray-900 text-white">
-    <main class="container mx-auto p-8">
-      <h1 class="text-4xl font-bold mb-8 text-center">壁纸画廊</h1>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {wallpapers.map(wallpaper => (
-          <a href={`/wallpapers/${wallpaper.slug}`} class="block border border-gray-700 rounded-lg overflow-hidden hover:shadow-lg hover:border-blue-500 transition-all">
-            <img src={wallpaper.data.thumbImg} alt={wallpaper.data.title} class="w-full h-48 object-cover"/>
-            <div class="p-4">
-              <h2 class="text-xl font-semibold">{wallpaper.data.title}</h2>
-              <p class="text-gray-400">{wallpaper.data.series}</p>
-            </div>
-          </a>
-        ))}
-      </div>
+
+<Layout title="Monstscape - 高质量 Labubu 壁纸站">
+  <main>
+    <h1 class="text-4xl font-bold text-center my-8">欢迎来到 Monstscape</h1>
+    <p class="text-center text-xl text-gray-600">
+      一个专门为 Labubu 爱好者打造的高质量壁纸下载站。
+    </p>
+    
     </main>
-  </body>
-</html>
+</Layout>
