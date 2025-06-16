@@ -1,0 +1,36 @@
+// src/pages/api/wallpapers.ts (完整替换)
+import type { APIRoute } from 'astro';
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+
+export const GET: APIRoute = async ({ url }) => {
+  const allWallpapers = await getCollection('wallpapers');
+  
+  const page = parseInt(url.searchParams.get('page') || '1');
+  const limit = 12;
+  const offset = (page - 1) * limit;
+
+  const paginatedWallpapers = allWallpapers.slice(offset, offset + limit);
+
+  const processedWallpapers = await Promise.all(
+    paginatedWallpapers.map(async (wallpaper) => {
+      const optimizedThumb = await getImage({
+        src: wallpaper.data.thumbImg,
+        width: 600,
+        format: 'webp',
+      });
+      return {
+        slug: wallpaper.slug,
+        title: wallpaper.data.title,
+        thumb: {
+          src: optimizedThumb.src,
+          ...optimizedThumb.attributes, // 这将包含 width 和 height
+        },
+      };
+    })
+  );
+
+  return new Response(JSON.stringify(processedWallpapers), {
+    headers: { 'Content-Type': 'application/json' },
+  });
+};

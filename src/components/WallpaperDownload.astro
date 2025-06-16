@@ -1,0 +1,69 @@
+---
+/**
+ * Props:
+ *  fullImg: string | StaticImageMetadata
+ *  title:   string
+ */
+export interface Props {
+  fullImg: string | import('astro:content').ImageMetadata;
+  title: string;
+}
+
+const { fullImg, title } = Astro.props;
+
+/* ① fullSrc 统一为相对路径字符串，如 /_astro/abc.webp */
+const fullSrc: string =
+  typeof fullImg === 'string' ? fullImg : fullImg.src;
+
+/* ② 文件名基底，用于 download 属性 */
+const baseFilename = title.trim().replace(/\s+/g, '-').toLowerCase();
+
+/* ③ 需要提供的分辨率（label → width） */
+const resolutions = [
+  { label: '1080p', width: 1920 },
+  { label: '2K',    width: 2560 },
+  { label: '4K',    width: 3840 },
+];
+
+/* ④ 生成 /_image 动态链接
+       ⚠️ 参数名必须是 "href" ！*/
+const downloadLinks = resolutions.map(({ label, width }) => ({
+  label,
+  url: `/_image?href=${encodeURIComponent(fullSrc)}&w=${width}&q=90&f=webp`,
+  filename: `${baseFilename}-${label}.webp`,
+}));
+
+/* ⑤ 原图下载（直接指向 fullSrc） */
+const originalExt = fullSrc.split('.').pop() ?? '';
+const originalDownloadUrl = `${fullSrc}?dl=${baseFilename}.${originalExt}`;
+---
+
+<div class="mt-8 p-6 bg-white dark:bg-gray-700 rounded-lg shadow-md">
+  <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+    下载壁纸
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    {downloadLinks.map(({ label, url, filename }) => (
+      <a
+        href={url}
+        download={filename}
+        class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full text-center transition duration-300"
+      >
+        下载 {label}
+      </a>
+    ))}
+
+    <a
+      href={originalDownloadUrl}
+      class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full text-center transition duration-300"
+      download
+    >
+      下载原图
+    </a>
+  </div>
+
+  <p class="text-sm text-gray-500 dark:text-gray-400 mt-4">
+    点击按钮即可获取对应分辨率的&nbsp;<code>.webp</code>&nbsp;文件；原图保留原始格式。
+  </p>
+</div>

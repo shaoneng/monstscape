@@ -1,25 +1,17 @@
 ---
-// src/components/WallpaperCard.astro
-import { Image } from '@astrojs/image/components';
-
-
-export interface Props {
-  wallpaper: any; // 'any' for simplicity, you can define a stricter type later
-}
+import { Image } from 'astro:assets';
 
 const { wallpaper } = Astro.props;
-const wallpaperUrl = `/wallpapers/${wallpaper.slug}/`;
+// 'wallpaper.data' 来自 getCollection, 'wallpaper.thumb' 来自 API fetch
+const imageSrc = wallpaper.data?.thumbImg || wallpaper.thumb.src;
+const title = wallpaper.data?.title || wallpaper.title;
 ---
-<a href={wallpaperUrl} class="group block border rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+
+<a href={`/wallpapers/${wallpaper.slug}/`} class="block group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
   <Image
-    src={wallpaper.data.thumbImg}
-    alt={wallpaper.data.title}
-    width={400}
-    aspectRatio="3:4"
-    format="webp"
+    src={imageSrc}
+    alt={title}
+    width="600"
     class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
   />
-  <div class="p-4 bg-white">
-    <h3 class="font-semibold text-gray-800 truncate">{wallpaper.data.title}</h3>
-  </div>
 </a>

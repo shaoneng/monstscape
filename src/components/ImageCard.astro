@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+
+export interface Props {
+  title: string;
+  series: string;
+  thumbImg: string;
+  fullImg: string; // Original full image path for potential download
+  slug: string;
+}
+
+const { title, series, thumbImg, slug } = Astro.props;
+const wallpaperUrl = `/wallpapers/${slug}`;
+---
+
+<a href={wallpaperUrl} class="masonry-item block overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+  <div class="relative pb-[150%] sm:pb-[100%] lg:pb-[120%] overflow-hidden">
+    <Image
+      src={thumbImg}
+      alt={title}
+      widths={[240, 480, 720]}
+      sizes="(max-width: 600px) 240px, (max-width: 1024px) 480px, 720px"
+      quality={80}
+      aspectRatio="16:9"
+      class="absolute inset-0 w-full h-full object-cover"
+      loading="lazy"
+      decoding="async"
+      inferSize={true}  {/* <--- Ensure this line is present */}
+    />
+  </div>
+  <div class="p-4 bg-white dark:bg-gray-700">
+    <h2 class="text-lg font-semibold text-gray-900 dark:text-white">{title}</h2>
+    <p class="text-sm text-gray-600 dark:text-gray-300">{series}</p>
+  </div>
+</a>
+
+<style>
+  /* Fallback for column-count based masonry */
+  .masonry-item {
+    display: inline-block; /* Required for column-count to work */
+    width: 100%;
+    margin-bottom: 1rem; /* Gap between items */
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+
+export interface Props {
+  path?: string[]; // 例如 ['wallpapers', 'labubu-dreaming']
+  currentTitle?: string;
+}
+
+const { path = [], currentTitle } = Astro.props;
+
+const breadcrumbs = [
+  { label: '首页', href: '/' },
+];
+
+for (let i = 0; i < path.length; i++) {
+  const segment = path[i];
+  // 简单处理 slug 到可读文本
+  const label = segment.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  const href = '/' + path.slice(0, i + 1).join('/');
+  breadcrumbs.push({ label, href });
+}
+
+if (currentTitle) {
+  breadcrumbs[breadcrumbs.length - 1].label = currentTitle; // 更新最后一个面包屑为实际标题
+}
+---
+
+<nav class="container mx-auto px-4 py-2 text-gray-600 text-sm">
+  <ol class="flex space-x-2">
+    {breadcrumbs.map((item, index) => (
+      <li class="flex items-center">
+        {index > 0 && <span class="mx-1">/</span>}
+        {index < breadcrumbs.length - 1 ? (
+          <a href={item.href} class="hover:underline">{item.label}</a>
+        ) : (
+          <span>{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

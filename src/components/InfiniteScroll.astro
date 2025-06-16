@@ -1,0 +1,110 @@
+---
+// src/components/InfiniteScroll.astro
+import WallpaperCard from './WallpaperCard.astro';
+
+// 从页面组件接收第一页的数据作为 prop
+const { initialWallpapers } = Astro.props;
+---
+
+<div id="wallpaper-grid" class="macy-container">
+  {initialWallpapers.map(wallpaper => (
+    <div class="m-2 break-inside-avoid">
+      <WallpaperCard wallpaper={wallpaper} />
+    </div>
+  ))}
+</div>
+
+<div id="sentinel" class="h-20 w-full"></div>
+
+<style>
+  .macy-container {
+    margin: 0 auto;
+  }
+  .break-inside-avoid {
+    break-inside: avoid;
+  }
+</style>
+
+<script>
+  // 监听 astro:page-load 事件，这是 Astro 4.x 推荐的客户端脚本执行方式
+  document.addEventListener('astro:page-load', async () => {
+    // 动态加载 Macy，确保它只在浏览器端执行
+    const { default: Macy } = await import('macy');
+
+    const grid = document.querySelector('#wallpaper-grid');
+    if (!grid) return;
+
+    // 初始化 Macy 瀑布流布局
+    const macyInstance = Macy({
+      container: grid,
+      trueOrder: false,
+      waitForImages: false,
+      margin: { x: 16, y: 16 },
+      columns: 4,
+      breakAt: {
+        1200: 4,
+        940: 3,
+        680: 2,
+        400: 1
+      },
+    });
+
+    let currentPage = 2; // 第一页已由服务器渲染，从第二页开始请求
+    let isLoading = false;
+
+    const sentinel = document.querySelector('#sentinel');
+    if (!sentinel) return;
+
+    // 使用 IntersectionObserver 监听哨兵元素
+    const observer = new IntersectionObserver(async (entries) => {
+      // 当哨兵元素进入视口且当前没有在加载时
+      if (entries[0].isIntersecting && !isLoading) {
+        isLoading = true;
+
+        try {
+          const response = await fetch(`/api/wallpapers?page=${currentPage}`);
+          if (!response.ok) throw new Error('Network response was not ok');
+          
+          const newWallpapers = await response.json();
+
+          if (newWallpapers.length > 0) {
+            const fragment = document.createDocumentFragment();
+            for (const wallpaper of newWallpapers) {
+              // 创建新的卡片容器
+              const cardWrapper = document.createElement('div');
+              cardWrapper.classList.add('m-2', 'break-inside-avoid');
+              
+              // 动态创建卡片内容
+              cardWrapper.innerHTML = `
+                <a href="/wallpapers/${wallpaper.slug}/" class="block group overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow">
+                  <img
+                    src="${wallpaper.thumb.src}"
+                    width="${wallpaper.thumb.width}"
+                    height="${wallpaper.thumb.height}"
+                    alt="${wallpaper.title}"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </a>`;
+              fragment.appendChild(cardWrapper);
+            }
+            grid.appendChild(fragment);
+            // 通知 Macy 重新计算布局
+            macyInstance.recalculate(true);
+            currentPage++;
+          } else {
+            // 如果没有更多数据，则停止观察
+            observer.disconnect();
+          }
+        } catch (error) {
+          console.error("Failed to fetch more wallpapers:", error);
+        } finally {
+          isLoading = false;
+        }
+      }
+    });
+
+    observer.observe(sentinel);
+  });
+</script>

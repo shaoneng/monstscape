@@ -1,0 +1,81 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import WallpaperDownload from '../../components/WallpaperDownload.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+export async function getStaticPaths() {
+  const wallpapers = await getCollection('wallpapers');
+  return wallpapers.map((wallpaper) => ({
+    params: { slug: wallpaper.slug },
+    props: { wallpaper },
+  }));
+}
+
+const { wallpaper } = Astro.props;
+const { title, series, fullImg } = wallpaper.data;
+
+const pageUrl = new URL(`/wallpapers/${wallpaper.slug}`, Astro.site).href;
+const ogImageUrl = new URL(
+  typeof fullImg === 'string' ? fullImg : fullImg.src,
+  Astro.site,
+).href;
+---
+
+<Layout
+  title={`${title} - Monstscape 壁纸`}
+  description={`下载 "${title}" (${series}) 的高品质壁纸。`}
+  image={ogImageUrl}
+  url={pageUrl}
+  type="article"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json">
+      {JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ImageObject',
+        name: title,
+        description: `高品质壁纸：${title}，来自 ${series} 系列。`,
+        contentUrl: ogImageUrl,
+        creator: { '@type': 'Organization', name: 'Monstscape' },
+        isPartOf: { '@type': 'WebPage', url: pageUrl },
+      })}
+    </script>
+  </Fragment>
+
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <!-- 左侧：主图 -->
+      <div class="lg:w-2/3">
+        <h1 class="text-4xl font-bold mb-4 text-gray-900 dark:text-white">
+          {title}
+        </h1>
+        <p class="text-gray-600 dark:text-gray-300 text-lg mb-6">
+          系列: {series}
+        </p>
+
+        <!-- 让 Astro 自动输出 <picture>，这里只指定宽度阶梯 -->
+        <Image
+          src={fullImg}
+          alt={title}
+          widths={[720, 1080, 1440, 2560, 3840]}
+          sizes="100vw"
+          quality={90}
+          loading="eager"
+          decoding="sync"
+          fetchpriority="high"
+          class="w-full h-auto rounded-lg shadow-xl mb-6"
+        />
+
+        <article class="prose dark:prose-invert max-w-none">
+          <slot />
+        </article>
+      </div>
+
+      <!-- 右侧：下载按钮 -->
+      <div class="lg:w-1/3">
+        <WallpaperDownload fullImg={fullImg} title={title} />
+      </div>
+    </div>
+  </div>
+</Layout>

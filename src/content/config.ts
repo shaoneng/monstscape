@@ -3,11 +3,11 @@ import { defineCollection, z } from 'astro:content';
 
 const wallpapersCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     series: z.string(),
-    thumbImg: z.string(),
-    fullImg: z.string(),
+    thumbImg: image(),
+    fullImg: image(),
     isDynamic: z.boolean().default(false),
   }),
 });

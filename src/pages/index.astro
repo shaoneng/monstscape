@@ -1,14 +1,18 @@
 ---
-// src/pages/index.astro
+// src/pages/index.astro (完整替换)
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import InfiniteScroll from '../components/InfiniteScroll.astro';
+
+// 页面直接获取第一页数据
+const firstPageWallpapers = (await getCollection('wallpapers')).slice(0, 12);
 ---
 
-<Layout title="Monstscape - 高质量 Labubu 壁纸站">
-  <main>
-    <h1 class="text-4xl font-bold text-center my-8 text-red-500">欢迎来到 Monstscape</h1>
-    <p class="text-center text-xl text-gray-600">
-      一个专门为 Labubu 爱好者打造的高质量壁纸下载站。
-    </p>
+<Layout title="Monstscape - Wallpapers">
+  <main class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold text-center text-gray-800 my-8">Wallpapers</h1>
     
-    </main>
+    {/* 将初始数据作为 prop 传入，并移除 client:指令 */}
+    <InfiniteScroll initialWallpapers={firstPageWallpapers} />
+  </main>
 </Layout>

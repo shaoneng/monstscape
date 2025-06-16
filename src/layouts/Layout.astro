@@ -1,33 +1,24 @@
 ---
-// src/layouts/Layout.astro
+import '../styles/global.css';
 
 interface Props {
-    title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
 ---
+
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
-    <meta name="google-site-verification" content="oMMix_0o1N5khgT-Xi-iL-ojGLZJOwgxK1-LQbsMtxE" />
     <meta charset="UTF-8" />
-    <meta name="description" content="一个高质量的Labubu壁纸下载站" />
+    <meta name="description" content="A collection of monster-themed wallpapers." />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
-    <!-- Google tag (gtag.js) -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-P4YDCWE5LF"></script>
-        <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-P4YDCWE5LF');
-</script>
   </head>
-  <body class="bg-gray-50 text-gray-900">
+  <body class="bg-gray-100 text-gray-900">
     <slot />
   </body>
 </html>
